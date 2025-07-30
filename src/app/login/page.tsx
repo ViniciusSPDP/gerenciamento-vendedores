@@ -59,9 +59,9 @@ export default function LoginPage() {
           router.push("/admin/dashboard");
         } else if (session?.user?.role === "VENDEDOR") {
           // Pequena correção: redirecionando para o dashboard do vendedor
-          router.push("/dashboard"); 
+          router.push("/"); 
         } else {
-          router.push("/");
+          router.push("/login");
         }
       }
     } catch (err) {

@@ -1,0 +1,104 @@
+// prisma/schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Modelo para Usuários (Admin e Vendedores)
+model User {
+  id        String   @id @default(cuid())
+  name      String?
+  // O nome de usuário deve ser único para login e para encontrar no CSV
+  username  String   @unique
+  password  String
+  role      UserRole @default(VENDEDOR)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relação: Um vendedor pode ter vários atendimentos
+  atendimentos Atendimento[]
+
+  // Next-Auth
+  accounts Account[]
+  sessions Session[]
+}
+
+// Modelo para Clientes
+model Cliente {
+  id              String   @id @default(cuid())
+  razaoSocial     String
+  cnpj            String   @unique
+  municipio       String
+  situacaoCredito String // Ex: "LIBERADO", "BLOQUEADO"
+  // Outros campos que possam existir na planilha
+  // ...
+
+  // Relação: Um cliente pode estar em vários atendimentos (ao longo do tempo)
+  atendimentos Atendimento[]
+}
+
+// Modelo que representa a tarefa/lead para o vendedor
+model Atendimento {
+  id         String            @id @default(cuid())
+  // Dados do momento da importação
+  faturamento       Float
+  comparativo       String
+  status            StatusAtendimento @default(PENDENTE) // A decisão do vendedor
+  dataImportacao    DateTime          @default(now())
+  dataResposta      DateTime?         // Data que o vendedor respondeu
+
+  // Relações
+  vendedorId String
+  vendedor   User   @relation(fields: [vendedorId], references: [id])
+
+  clienteId String
+  cliente   Cliente @relation(fields: [clienteId], references: [id])
+
+  @@unique([vendedorId, clienteId, dataImportacao]) // Garante que não haja duplicatas da mesma tarefa
+}
+
+// Enums para tipos controlados
+enum UserRole {
+  ADMIN
+  VENDEDOR
+}
+
+enum StatusAtendimento {
+  PENDENTE
+  VAI_ATENDER
+  NAO_CONSIGO_ATENDER
+}
+
+
+// --- Modelos Obrigatórios do Next-Auth ---
+model Account {
+  id                 String  @id @default(cuid())
+  userId             String
+  type               String
+  provider           String
+  providerAccountId  String
+  refresh_token      String? @db.Text
+  access_token       String? @db.Text
+  expires_at         Int?
+  token_type         String?
+  scope              String?
+  id_token           String? @db.Text
+  session_state      String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}

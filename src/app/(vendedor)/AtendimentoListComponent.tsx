@@ -75,7 +75,7 @@ export default function AtendimentoListComponent({ initialAtendimentos }: Props)
           };
         } else if (at.faturamento === 0) {
           motivoInfo = {
-            texto: 'Cliente sem vendas nos últimos 2 meses.',
+            texto: 'Cliente sem vendas nos últimos 3 meses.',
             corBorda: 'border-yellow-500',
             corIcone: 'text-yellow-500',
             Icone: AlertIcon,
@@ -94,9 +94,9 @@ export default function AtendimentoListComponent({ initialAtendimentos }: Props)
               <h3 className="text-lg font-bold text-gray-900">{at.cliente.razaoSocial}</h3>
               <p className="text-sm text-gray-600 mb-4">CNPJ: {at.cliente.cnpj}</p>
               <div className="border-t border-gray-200 pt-4 space-y-2 text-sm">
-                <p><span className="font-semibold text-gray-800">Município:</span> {at.cliente.municipio}</p>
-                <p><span className="font-semibold text-gray-800">Sit. Crédito:</span> {at.cliente.situacaoCredito}</p>
-                <p><span className="font-semibold text-gray-800">Faturamento:</span> R$ {at.faturamento.toFixed(2)}</p>
+                <p className='text-gray-600'><span className="font-semibold text-gray-800">Município:</span> {at.cliente.municipio}</p>
+                <p className='text-gray-600'><span className="font-semibold text-gray-800">Sit. Crédito:</span> {at.cliente.situacaoCredito}</p>
+                <p className='text-gray-600'><span className="font-semibold text-gray-800">Faturamento:</span> R$ {at.faturamento.toFixed(2)}</p>
               </div>
             </div>
 

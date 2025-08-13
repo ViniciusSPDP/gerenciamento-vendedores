@@ -72,6 +72,7 @@ enum StatusAtendimento {
   PENDENTE
   VAI_ATENDER
   NAO_CONSIGO_ATENDER
+  FECHOU_CNPJ
 }
 
 

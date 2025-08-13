@@ -24,6 +24,7 @@ export type VendedorStats = {
   nome: string;
   VAI_ATENDER: number;
   NAO_CONSIGO_ATENDER: number;
+  FECHOU_CNPJ: number; // Novo campo para "Fechou CNPJ"
   PENDENTE: number;
   total: number;
 };
@@ -56,6 +57,7 @@ export default async function AdminDashboardPage() {
       VAI_ATENDER: 0,
       NAO_CONSIGO_ATENDER: 0,
       PENDENTE: 0,
+      FECHOU_CNPJ: 0, // Novo campo para "Fechou CNPJ",
       total: 0,
     };
 

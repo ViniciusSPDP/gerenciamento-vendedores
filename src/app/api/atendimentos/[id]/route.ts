@@ -10,17 +10,16 @@ const prisma = new PrismaClient();
 
 export async function PATCH(
   request: NextRequest,
-  // --- MUDANÇA 1: Corrigindo a tipagem dos parâmetros ---
-  // Os parâmetros não são uma Promise, são um objeto direto.
-  { params }: { params: { id: string } }
+  // --- CORREÇÃO: params é uma Promise no Next.js 13+ App Router ---
+  { params }: { params: Promise<{ id: string }> }
 ) {
   const session = await getServerSession(authOptions);
   if (!session || session.user.role !== 'VENDEDOR') {
     return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });
   }
 
-  // O 'id' é acessado diretamente de params
-  const { id: atendimentoId } = params;
+  // --- CORREÇÃO: Await params para obter o id ---
+  const { id: atendimentoId } = await params;
   const { status } = (await request.json()) as { status: StatusAtendimento };
 
   // --- MUDANÇA 2: Adicionando o novo status à validação ---
